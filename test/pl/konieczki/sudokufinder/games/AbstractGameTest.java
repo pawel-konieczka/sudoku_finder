@@ -2,6 +2,7 @@ package pl.konieczki.sudokufinder.games;
 
 import lombok.NonNull;
 import org.junit.Assert;
+import org.junit.Test;
 import pl.konieczki.sudokufinder.model.SudokuField;
 import pl.konieczki.sudokufinder.model.SudokuHelper;
 import pl.konieczki.sudokufinder.model.SudokuPossibilitiesHolder;
@@ -10,15 +11,20 @@ import pl.konieczki.sudokufinder.utils.SudokuValidator;
 
 abstract class AbstractGameTest {
 
-    protected void findSudoku(@NonNull byte[] fields, @NonNull String firstRow) {
-        final SudokuField input = new SudokuField(fields);
+    @Test
+    public void runTest() {
+        final SudokuField input = new SudokuField(prepareFields());
         final SudokuPossibilitiesHolder sph = SudokuPossibilitiesHolder.construct(input);
         final SudokuPossibilitiesHolder result = new SudokuFinder(null)
                 .findSudoku(sph);
         final SudokuField sudokuField = result.deconstruct();
         Assert.assertTrue(SudokuValidator.validate(sudokuField));
-        Assert.assertEquals(firstRow, genFirstRowAsString(sudokuField));
+        Assert.assertEquals(prepareFirstRow(), genFirstRowAsString(sudokuField));
     }
+
+    protected abstract byte[] prepareFields();
+
+    protected abstract String prepareFirstRow();
 
     private String genFirstRowAsString(@NonNull SudokuField sudokuField) {
         final var sb = new StringBuilder();
